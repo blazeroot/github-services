@@ -36,7 +36,7 @@ class Service::Pubnub < Service::HttpPost
     raise_config_error 'Invalid Channel'       unless channel.match(/^[A-Za-z0-9\-_]+$/)
     raise_config_error 'Invalid Origin'        unless origin.match(/^[A-Za-z0-9\-_.]+$/)
 
-    payload = generate_json(payload)
+    payload = encode_payload(generate_json(@payload))
 
     proto = ssh ? 'http://' : 'https://'
 
@@ -48,7 +48,7 @@ class Service::Pubnub < Service::HttpPost
   private
 
   def encode_payload(payload)
-    URI.escape(payload).gsub(/\?/,'%3F')
+    URI.escape(payload.to_s).gsub(/\?/,'%3F').gsub(/\//, '%2F')
   end
 
 end
